@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Farmers and Developers"
+permalink: /farmers.html
 date: 2026-02-01
 ---
 
