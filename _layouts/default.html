@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+  <style>
+    body {
+      font-family: Georgia, "Times New Roman", Times, serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #000;
+      background-color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    table.layout {
+      width: 450px;
+      margin: 0;
+      margin-left: 40px;
+      border: 0;
+      border-collapse: collapse;
+    }
+    td { padding: 10px 0; }
+    td.header {
+      padding: 20px 0;
+    }
+    td.header a {
+      text-decoration: none;
+      color: #000;
+    }
+    td.footer {
+      padding: 20px 0;
+      font-size: 13px;
+      color: #666;
+    }
+    a { color: #00e; }
+    a:visited { color: #551a8b; }
+    img { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <table class="layout" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="header">
+        <b><a href="/">{{ site.title }}</a></b>
+      </td>
+    </tr>
+    <tr>
+      <td class="content">
+        {{ content }}
+      </td>
+    </tr>
+    <tr>
+      <td class="footer">
+        &copy; {{ site.title }}
+      </td>
+    </tr>
+  </table>
+  <script data-goatcounter="https://nick2k5.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

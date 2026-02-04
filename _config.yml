@@ -1,0 +1,7 @@
+title: "Nick Alexander"
+url: "https://nickalexander.org"
+baseurl: ""
+permalink: /:title.html
+exclude: ["_word", "convert.py", "README.md"]
+plugins:
+  - jekyll-sitemap
