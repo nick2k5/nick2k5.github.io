@@ -36,7 +36,7 @@ of a 3^rd^ grade essay I wrote in which I describe a fondness for how my
 grandma used to make them, half with provolone cheese, half with Swiss.
 The teacher gave me a B-, with points being subtracted specifically for
 the gratuitous nature of the sandwich details as the topic of the essay
-was supposed to be Black History Month. But what Miss Foster derided as
+was supposed to be George Washington. But what Miss Foster derided as
 gratuitous and off topic, Clawd saw implied significance.
 
 Anyway, the entire experience was quite positive and I've instructed
