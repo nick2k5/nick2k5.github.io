@@ -37,3 +37,13 @@ pip install -r requirements.txt
 
 - Python 3
 - All Python dependencies (including pandoc) are installed via `requirements.txt`
+
+## Checking build status
+
+After pushing, check if GitHub Pages has finished building:
+
+```
+gh api repos/nick2k5/nick2k5.github.io/pages/builds/latest --jq '{status, error}'
+```
+
+When `status` shows `"built"`, the site is live.
