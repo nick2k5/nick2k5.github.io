@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-"""Convert Word documents in _word/ to Jekyll markdown posts in _posts/.
+"""Convert Word documents to Jekyll markdown posts and drafts.
 
 Usage: python convert.py
 
-Filename convention for Word docs:
-    YYYY-MM-DD-Title of Post.docx
-    YYYY-MM-Title of Post.docx     (day defaults to 01)
+Posts (in _word/posts/):
+    Filename: YYYY-MM-DD-Title of Post.docx or YYYY-MM-Title of Post.docx
+    Output: _posts/YYYY-MM-DD-title-of-post.md
+    Layout: post (includes date display)
 
-The script will NOT overwrite existing markdown files. To re-convert a post,
-delete the corresponding file in _posts/ first.
+Drafts (in _word/drafts/):
+    Filename: Title of Draft.docx (no date prefix needed)
+    Output: _ideas/title-of-draft.md
+    Layout: draft (no date display)
+
+The script will NOT overwrite existing markdown files. To re-convert,
+delete the corresponding output file first.
 
 Requires: pip install -r requirements.txt (inside a venv)
 """
@@ -20,12 +26,14 @@ import glob
 
 import pypandoc
 
-WORD_DIR = "_word"
+POSTS_WORD_DIR = "_word/posts"
+DRAFTS_WORD_DIR = "_word/drafts"
 POSTS_DIR = "_posts"
+IDEAS_DIR = "_ideas"
 MEDIA_DIR = "assets/images"
 
 # Match: YYYY-MM-DD-Title or YYYY-MM-Title
-FILENAME_RE = re.compile(
+POST_FILENAME_RE = re.compile(
     r"^(\d{4})-(\d{2})(?:-(\d{2}))?-(.+)\.docx$"
 )
 
@@ -39,16 +47,14 @@ def slugify(text):
     return text.strip("-")
 
 
-def find_existing_post(date_str, slug):
-    """Check if a post with this date and slug already exists."""
-    pattern = os.path.join(POSTS_DIR, f"{date_str}-{slug}.md")
-    return glob.glob(pattern)
+def find_existing_file(directory, filename):
+    """Check if a file already exists."""
+    path = os.path.join(directory, filename)
+    return os.path.exists(path)
 
 
-def convert_docx(docx_path, date_str, title, slug):
+def convert_docx(docx_path, output_path, title, front_matter):
     """Convert a .docx file to markdown using pandoc."""
-    output_path = os.path.join(POSTS_DIR, f"{date_str}-{slug}.md")
-
     # Convert with pandoc via pypandoc
     try:
         markdown = pypandoc.convert_file(
@@ -68,7 +74,6 @@ def convert_docx(docx_path, date_str, title, slug):
     markdown = re.sub(r"!\[([^\]]*)\]\(assets/", r"![\1](/assets/", markdown)
 
     # Remove duplicate title heading and date line that pandoc extracts from the doc body
-    # Strip leading heading matching the title
     lines = markdown.split("\n")
     cleaned = []
     skip_next_blank = False
@@ -94,13 +99,6 @@ def convert_docx(docx_path, date_str, title, slug):
         i += 1
     markdown = "\n".join(cleaned)
 
-    # Build front matter
-    front_matter = "---\n"
-    front_matter += f"layout: post\n"
-    front_matter += f"title: \"{title}\"\n"
-    front_matter += f"date: {date_str}\n"
-    front_matter += "---\n\n"
-
     # Write output
     with open(output_path, "w") as f:
         f.write(front_matter)
@@ -110,25 +108,19 @@ def convert_docx(docx_path, date_str, title, slug):
     return True
 
 
-def main():
-    if not os.path.isdir(WORD_DIR):
-        print(f"No {WORD_DIR}/ directory found.")
-        sys.exit(1)
+def convert_posts():
+    """Convert Word docs in _word/posts/ to Jekyll posts."""
+    if not os.path.isdir(POSTS_WORD_DIR):
+        return 0, 0
 
     os.makedirs(POSTS_DIR, exist_ok=True)
-    os.makedirs(MEDIA_DIR, exist_ok=True)
 
-    docx_files = [f for f in os.listdir(WORD_DIR) if f.endswith(".docx")]
-
-    if not docx_files:
-        print(f"No .docx files found in {WORD_DIR}/.")
-        return
-
+    docx_files = [f for f in os.listdir(POSTS_WORD_DIR) if f.endswith(".docx")]
     converted = 0
     skipped = 0
 
     for filename in sorted(docx_files):
-        match = FILENAME_RE.match(filename)
+        match = POST_FILENAME_RE.match(filename)
         if not match:
             print(f"SKIP: {filename} (doesn't match YYYY-MM-DD-Title.docx or YYYY-MM-Title.docx)")
             skipped += 1
@@ -140,21 +132,97 @@ def main():
         title = raw_title.replace("-", " ").strip()
         slug = slugify(raw_title)
 
-        docx_path = os.path.join(WORD_DIR, filename)
+        output_filename = f"{date_str}-{slug}.md"
+        output_path = os.path.join(POSTS_DIR, output_filename)
+        docx_path = os.path.join(POSTS_WORD_DIR, filename)
 
         # Check if already converted
-        if find_existing_post(date_str, slug):
+        if find_existing_file(POSTS_DIR, output_filename):
             print(f"SKIP: {filename} (markdown already exists)")
             skipped += 1
             continue
 
-        print(f"Converting: {filename}")
-        if convert_docx(docx_path, date_str, title, slug):
+        front_matter = "---\n"
+        front_matter += f"layout: post\n"
+        front_matter += f"title: \"{title}\"\n"
+        front_matter += f"date: {date_str}\n"
+        front_matter += "---\n\n"
+
+        print(f"Converting post: {filename}")
+        if convert_docx(docx_path, output_path, title, front_matter):
             converted += 1
         else:
             skipped += 1
 
-    print(f"\nDone. Converted: {converted}, Skipped: {skipped}")
+    return converted, skipped
+
+
+def convert_drafts():
+    """Convert Word docs in _word/drafts/ to Jekyll drafts (ideas collection)."""
+    if not os.path.isdir(DRAFTS_WORD_DIR):
+        return 0, 0
+
+    os.makedirs(IDEAS_DIR, exist_ok=True)
+
+    docx_files = [f for f in os.listdir(DRAFTS_WORD_DIR) if f.endswith(".docx")]
+    converted = 0
+    skipped = 0
+
+    for filename in sorted(docx_files):
+        # Strip optional date prefix from draft filenames
+        raw_title = filename[:-5]  # Remove .docx
+        date_match = POST_FILENAME_RE.match(filename)
+        if date_match:
+            # Has date prefix - extract just the title part
+            raw_title = date_match.group(4)
+        title = raw_title.replace("-", " ").strip()
+        slug = slugify(raw_title)
+
+        output_filename = f"{slug}.md"
+        output_path = os.path.join(IDEAS_DIR, output_filename)
+        docx_path = os.path.join(DRAFTS_WORD_DIR, filename)
+
+        # Check if already converted
+        if find_existing_file(IDEAS_DIR, output_filename):
+            print(f"SKIP: {filename} (markdown already exists)")
+            skipped += 1
+            continue
+
+        front_matter = "---\n"
+        front_matter += f"layout: draft\n"
+        front_matter += f"title: \"{title}\"\n"
+        front_matter += f"permalink: /drafts/{slug}.html\n"
+        front_matter += "---\n\n"
+
+        print(f"Converting draft: {filename}")
+        if convert_docx(docx_path, output_path, title, front_matter):
+            converted += 1
+        else:
+            skipped += 1
+
+    return converted, skipped
+
+
+def main():
+    posts_exist = os.path.isdir(POSTS_WORD_DIR)
+    drafts_exist = os.path.isdir(DRAFTS_WORD_DIR)
+
+    if not posts_exist and not drafts_exist:
+        print(f"No {POSTS_WORD_DIR}/ or {DRAFTS_WORD_DIR}/ directory found.")
+        sys.exit(1)
+
+    os.makedirs(MEDIA_DIR, exist_ok=True)
+
+    posts_converted, posts_skipped = convert_posts()
+    drafts_converted, drafts_skipped = convert_drafts()
+
+    total_converted = posts_converted + drafts_converted
+    total_skipped = posts_skipped + drafts_skipped
+
+    if total_converted == 0 and total_skipped == 0:
+        print("No .docx files found.")
+    else:
+        print(f"\nDone. Converted: {total_converted}, Skipped: {total_skipped}")
 
 
 if __name__ == "__main__":

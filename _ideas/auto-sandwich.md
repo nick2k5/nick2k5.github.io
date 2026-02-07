@@ -1,7 +1,7 @@
 ---
-layout: post
+layout: draft
 title: "Auto Sandwich"
-date: 2026-02-05
+permalink: /drafts/auto-sandwich.html
 ---
 
 Yesterday, a slender Norwegian man named Stan appeared at my door
