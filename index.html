@@ -11,4 +11,12 @@ title: Home
 
 <p>Find me on <a href="https://www.linkedin.com/in/ndalexander/">LinkedIn</a> or email me at my first name at friale dot com.
 
-<p><b>Latest Writing:</b> <a href="/screen-lane.html">Screen Lane</a>
+<p><b>Writing</b></p>
+<ul class="post-list">
+  {% for post in site.posts %}
+  <li>
+    <a href="{{ post.url }}">{{ post.title }}</a>
+    <span class="post-date">{{ post.date | date: "%B %Y" }}</span>
+  </li>
+  {% endfor %}
+</ul>
