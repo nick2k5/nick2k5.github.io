@@ -5,7 +5,7 @@ date: 2026-09-24
 permalink: /visible-hand.html
 ---
 
-![The Visible Hand That Feeds: a vintage propaganda-style poster of a giant open hand raining a paycheck, health insurance card, ID badge, and keys down on rows of office workers gazing up from their desks](/assets/images/media/visible-hand.webp)
+![The Visible Hand That Feeds: a vintage propaganda-style poster of a giant open hand raining a pension check, health insurance card, employee ID badge, and keys down on rows of office workers gazing up from their desks, with a corporate campus and airplane hangar below](/assets/images/media/visible-hand.webp)
 
 **I. Before managers**
 
