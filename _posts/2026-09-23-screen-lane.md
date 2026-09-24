@@ -3,6 +3,8 @@ layout: post
 title: "Screen Lane"
 permalink: /screen-lane.html
 date: 2026-09-23
+image: /assets/images/og/screen-lane.jpg
+description: "We are living through our own gin years. How societies metabolize an addictive technology, and why the turn is approaching."
 ---
 
 ![Screen Lane: an engraving in the style of Hogarth's Gin Lane, a city street where every face is lit blue by a glowing screen](/assets/images/media/screen-lane.webp)

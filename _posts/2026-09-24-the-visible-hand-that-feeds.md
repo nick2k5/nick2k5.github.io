@@ -3,6 +3,8 @@ layout: post
 title: "The Visible Hand That Feeds"
 date: 2026-09-24
 permalink: /visible-hand.html
+image: /assets/images/og/visible-hand.jpg
+description: "How the American corporation became the safety net, and what happens now that AI is dissolving the jobs that held it up."
 ---
 
 ![The Visible Hand That Feeds: a vintage propaganda-style poster of a giant open hand raining a pension check, health insurance card, employee ID badge, and keys down on rows of office workers gazing up from their desks, with a corporate campus and airplane hangar below](/assets/images/media/visible-hand.webp)

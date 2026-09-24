@@ -3,6 +3,8 @@ layout: post
 title: "Farmers and Developers"
 permalink: /farmers.html
 date: 2026-02-01
+image: /assets/images/og/farmers.jpg
+description: "What happened to farmers over the last two centuries is about to happen to software developers."
 ---
 
 About one out of every 5 people who you'd meet in 1860 would have been a
